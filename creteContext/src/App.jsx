@@ -4,6 +4,8 @@ import { TodoProvider } from "./contexts";
 const App = () => {
   const [count, setTodos] = useState({});
 
+  const addTodo = () => {};
+
   return (
     <TodoProvider
       value={{ todos, deleteTodo, updateTodo, addTodo, togglecomplete }}
