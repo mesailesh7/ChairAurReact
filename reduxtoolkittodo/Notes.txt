@@ -1,0 +1,72 @@
+Redux and react-redux is different 
+Redux is the core-library while as react-redux is the implementation of redux to wire/connection between them.
+
+In Redux toolkit most of the things are done automatically.
+
+First we start by creating store...There are exceptions where we have to create two stores but its not best practise to create more than one store....
+
+> Every apps has one store that is called single source of truth
+
+src>app>store.js where we configure store....
+
+// configureStore is imported to configure the store
+import {configureStore} from '@reduxjs/toolkit'
+import todoReducer from ' ../features/todo/todoSlice
+
+export const store = configureStore ({
+// In order for redux to know where the features are and when it needs to update it we have to tell her where the data is
+reducer: todoReducer
+})
+
+src>features>todo
+// we created todo todoSlice ( we call features as slice)
+
+// we imported createSlice to create slice
+// slice needs three features i.e name, initialState, reducer
+
+import { createSlice, nanoid } from "@reduxjs/toolkit";
+
+// the initial state of the reducer just like in useState it might be a array,number, id, null anything
+
+const initialState = {
+  todos: [{ id: 1, text: "hello world" }],
+};
+
+// create slice is a method inside in which mostly objects come
+export const todoSlice = createSlice({
+  name: "todo",
+  initialState,
+  reducers: {
+    // in add todo just give reference to the function. Don't call the function
+    // In state we get the initial value, action we get the current value
+    addTodo: (state, action) => {
+      const todo = {
+        id: nanoid(),
+        text: action.payload,
+      };
+      state.todos.push(todo);
+    },
+    // state hsa current state and action is current data
+    removeTodo: (state, action) => {
+      state.todos = state.todos.filter((todo) => todo.id !== action.payload);
+    },
+    updateTodo: (state, action) => {
+      state.todos = state.todos.map((todo) => {
+        if (todo.id === action.payload.id) {
+          return { ...todo, text: action.payload.text };
+        }
+        return todo;
+      });
+    },
+  },
+});
+
+// you have to export all the reducers so that it can be imported in any components as per needed
+export const { addTodo, updateTodo, removeTodo } = todoSlice.actions;
+
+//
+export default todoSlice.reducer;
+
+
+
+

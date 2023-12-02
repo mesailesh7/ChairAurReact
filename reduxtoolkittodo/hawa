@@ -1,0 +1,76 @@
+todoSlice.js
+
+```import {createSlice, nanoid} from '@reduxjs/toolkit'
+
+const initialState = {
+    todos: [{id:1,text:"Hello"}],
+    role:"add",
+    editTodo:"",
+    id:null
+}
+
+export const todoSlice = createSlice({
+    name:'todo',
+    initialState,
+    reducers:{
+        addTodo:(state,action)=>{
+            const todo={
+                id:nanoid(),
+                text:action.payload,
+            }
+            state.todos.push(todo) 
+        },
+        removeTodo:(state,action)=>{
+            const id=action.payload;
+            state.todos=state.todos.filter((todo)=>todo.id!==id);
+        },
+        changeRole:(state,action)=>{
+            state.role=action.payload.role;
+            state.editTodo=action.payload.editTodo;
+            state.id=action.payload.id;
+        },
+        updateTodo:(state,action)=>{
+            const {id,text}=action.payload;
+            state.todos.find((todo)=>todo.id===id).text=text;
+            state.role="add"
+            state.todo=""
+        }
+    }
+})
+
+export const {addTodo,removeTodo,changeRole,updateTodo} = todoSlice.actions;
+
+export default todoSlice.reducer;
+
+```
+
+
+todo.jsx
+
+Todo.jsx
+
+```import {useSelector,useDispatch} from 'react-redux'
+import { removeTodo } from './features/todoSlice'
+import { changeRole } from './features/todoSlice'
+const Todo = () => {
+    const todos=useSelector(state=>state.todos)
+    const dispatch=useDispatch();
+
+  return (
+    <div>
+        Todo
+        {todos.map((todo)=>(
+            <div key={todo.id}>
+                <span>{todo.text}</span>
+                <button onClick={()=>{dispatch(removeTodo(todo.id))}}>X</button>
+                <button onClick={()=>{dispatch(changeRole({role:'edit',editTodo:todo.text,id:todo.id}))}}>edit</button>
+            </div>
+        ))}
+    </div>
+  )
+}
+
+export default Todo
+```
+
+Added a edit button here with dispatch event changeRole.
